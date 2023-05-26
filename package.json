@@ -17,18 +17,23 @@
     "url": "git+https://github.com/haijie-x/vite-plugin-cjs2esm.git"
   },
   "license": "MIT",
-  "type": "module",
   "files": [
     "dist"
   ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist"
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
   },
   "scripts": {
     "dev": "tsc -w && pnpm run link",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "build": "tsc",
+    "lint": "eslint . --fix",
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "prepublishOnly": "pnpm run lint:fix && pnpm run build",
     "release": "bumpp && npm publish",
     "link": "node ./scripts/link"
@@ -42,6 +47,7 @@
     "eslint-config-prettier": "^8.8.0",
     "execa": "^6.1.0",
     "prettier": "^2.8.0",
+    "tsup": "^6.7.0",
     "tsx": "^3.12.1",
     "typescript": "^5.0.4",
     "vite": "^4.3.8"
