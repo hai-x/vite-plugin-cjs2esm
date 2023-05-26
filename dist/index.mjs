@@ -1,41 +1,3 @@
-"use strict";
-var __create = Object.create;
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-// src/index.ts
-var src_exports = {};
-__export(src_exports, {
-  default: () => src_default,
-  esbuildPlugin: () => esbuildPlugin,
-  vitePlugin: () => vitePlugin
-});
-module.exports = __toCommonJS(src_exports);
-
 // src/contants.ts
 var DEFAULT_EXTENSIONS = [
   ".mjs",
@@ -50,12 +12,12 @@ var VITE_REG = /.vite/;
 var COMMON_JS_REG = /\b(module\.exports|exports\.\w+|exports\s*=\s*|exports\s*\[.*\]\s*=\s*)/;
 
 // src/utils.ts
-var import_node_path = __toESM(require("path"), 1);
+import path from "path";
 var isCommonJs = (source) => {
   return COMMON_JS_REG.test(source);
 };
 var skipTransform = (source, id) => {
-  if (!DEFAULT_EXTENSIONS.includes(import_node_path.default.extname(id)))
+  if (!DEFAULT_EXTENSIONS.includes(path.extname(id)))
     return true;
   else if (VITE_REG.test(id))
     return true;
@@ -65,8 +27,8 @@ var skipTransform = (source, id) => {
 };
 
 // src/transform.ts
-var import_magic_string = __toESM(require("magic-string"), 1);
-var import_acorn = require("acorn");
+import MagicString from "magic-string";
+import { parse } from "acorn";
 
 // src/importer.ts
 var resolveImporters = (importers) => {
@@ -83,7 +45,7 @@ var resolveImporters = (importers) => {
 };
 
 // src/transform.ts
-var import_acorn_walk = require("acorn-walk");
+import { ancestor } from "acorn-walk";
 
 // src/exporter.ts
 var resolveExporters = (exporters) => {
@@ -117,14 +79,14 @@ var transform = (source, id) => {
   const importers = [];
   const exporters = [];
   try {
-    ast = (0, import_acorn.parse)(source, {
+    ast = parse(source, {
       sourceType: "module",
       ecmaVersion: 2020
     });
   } catch (error) {
     return source;
   }
-  (0, import_acorn_walk.ancestor)(ast, {
+  ancestor(ast, {
     CallExpression(node, ancestors) {
       const isCjsImporter = node.callee.name === "require";
       isCjsImporter && importers.push({
@@ -137,7 +99,7 @@ var transform = (source, id) => {
       isCjsExporter && exporters.push(node);
     }
   });
-  const ms = new import_magic_string.default(source);
+  const ms = new MagicString(source);
   for (const importer of resolveImporters(importers)) {
     const { prepend, overwrite, start, end } = importer;
     overwrite && ms.overwrite(start, end, overwrite);
@@ -155,7 +117,7 @@ var transform = (source, id) => {
 var transform_default = transform;
 
 // src/plugin.ts
-var import_promises = __toESM(require("fs/promises"), 1);
+import fs from "fs/promises";
 var defaultOptions = {
   filter: /.*/
 };
@@ -189,7 +151,7 @@ var esbuildPlugin = (options) => {
         const { path: id } = args;
         let source;
         try {
-          source = await import_promises.default.readFile(id, "utf8");
+          source = await fs.readFile(id, "utf8");
         } catch (error) {
           return null;
         }
@@ -208,8 +170,8 @@ var esbuildPlugin = (options) => {
 
 // src/index.ts
 var src_default = vitePlugin;
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
+export {
+  src_default as default,
   esbuildPlugin,
   vitePlugin
-});
+};
