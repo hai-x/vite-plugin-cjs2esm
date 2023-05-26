@@ -25,9 +25,10 @@
     ".": "./dist"
   },
   "scripts": {
-    "dev": "tsc && pnpm run link",
+    "dev": "tsc -w && pnpm run link",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "build": "tsc",
     "prepublishOnly": "pnpm run lint:fix && pnpm run build",
     "release": "bumpp && npm publish",
     "link": "node ./scripts/link"
