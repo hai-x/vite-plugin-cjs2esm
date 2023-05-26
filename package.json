@@ -3,21 +3,37 @@
   "version": "0.0.0",
   "description": "",
   "author": "haijie-x",
-  "keywords": [],
+  "keywords": [
+    "vite",
+    "commonjs",
+    "plugin"
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
+  "homepage": "https://github.com/haijie-x/vite-plugin-cjs2esm",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haijie-x/vite-plugin-cjs2esm.git"
+  },
+  "license": "MIT",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist"
+  },
   "scripts": {
-    "dev": "tsx src/index.ts",
+    "dev": "tsc && pnpm run link",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "tsc",
     "prepublishOnly": "pnpm run lint:fix && pnpm run build",
-    "release": "bumpp && npm publish"
+    "release": "bumpp && npm publish",
+    "link": "node ./scripts/link"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@types/node": "^20.2.4",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
     "bumpp": "^9.1.0",
@@ -26,6 +42,15 @@
     "execa": "^6.1.0",
     "prettier": "^2.8.0",
     "tsx": "^3.12.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "vite": "^4.3.8"
+  },
+  "dependencies": {
+    "acorn": "^8.8.2",
+    "acorn-walk": "^8.2.0",
+    "magic-string": "^0.30.0"
+  },
+  "engines": {
+    "node": "^14.18.0 || >=16.0.0"
   }
 }

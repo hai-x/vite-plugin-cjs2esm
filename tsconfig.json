@@ -10,7 +10,8 @@
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "outDir": "dist",
-    "noEmit": false
+    "noEmit": false,
+    "declaration": true
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }
