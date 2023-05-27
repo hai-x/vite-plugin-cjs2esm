@@ -6,7 +6,7 @@ import { ancestor } from 'acorn-walk'
 import type { ImporterNode } from './types/index'
 import { resolveExporters } from './exporter'
 
-const transform = (source: string, id: string): string => {
+const transform = (source: string): string | null => {
   let ast: Node
   const importers: ImporterNode[] = []
   const exporters: Node[] = []
@@ -16,8 +16,8 @@ const transform = (source: string, id: string): string => {
       ecmaVersion: 2020
     }) as Node
   } catch (error) {
-    // ignore as it might not be a JS file, the subsequent plugins will catch the error
-    return source
+    console.error(error)
+    return null
   }
 
   ancestor(ast, {

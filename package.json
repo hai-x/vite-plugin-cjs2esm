@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-cjs2esm",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "author": "haijie-x",
   "keywords": [
@@ -31,12 +31,12 @@
     }
   },
   "scripts": {
-    "dev": "tsc -w && pnpm run link",
+    "dev": "pnpm run link & tsup src/index.ts --format esm --watch",
     "lint": "eslint . --fix",
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "prepublishOnly": "pnpm run lint",
     "release": "bumpp && npm publish",
-    "link": "node ./scripts/link"
+    "link": "node ./scripts/link.mjs"
   },
   "devDependencies": {
     "@types/node": "^20.2.4",

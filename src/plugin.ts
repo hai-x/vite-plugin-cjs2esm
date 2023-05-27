@@ -9,17 +9,18 @@ const defaultOptions = {
   filter: /.*/
 }
 
-export const vitePlugin = (options: Options): Plugin => {
+export const vitePlugin = (options?: Options): Plugin => {
   const _options = Object.assign({}, defaultOptions, options)
   const { filter } = _options
   return {
     apply: 'serve',
     name: 'vite:cjs2esm',
     transform(source, id) {
+      let _source
       if (!skipTransform(source, id) && filter.test(id)) {
-        const _source = _transform(source, id)
-        console.log(_source)
-
+        _source = _transform(source)
+      }
+      if (_source) {
         return {
           code: _source,
           map: null,
@@ -39,14 +40,17 @@ export const esbuildPlugin = (options: Options) => {
     setup(build: any) {
       build.onLoad({ filter }, async (args: any) => {
         const { path: id } = args
-        let source: string
+        let source
         try {
           source = await fs.readFile(id, 'utf8')
         } catch (error) {
+          console.error(error)
           return null
         }
         if (!skipTransform(source, id)) {
-          source = _transform(source, id)
+          source = _transform(source)
+        }
+        if (source) {
           return {
             contents: source,
             loader: 'js'

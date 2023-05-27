@@ -12,13 +12,14 @@ export const resolveExporters = (
     if (exporter.left.type === 'MemberExpression') {
       if (exporter.left.object.name === 'exports') {
         const propertyName = exporter.left.property.name
-        overwrite = `export const ${propertyName}`
+        overwrite = `const ${name}`
+        append = `export { ${name} as ${propertyName} };`
       } else if (
         exporter.left.object.name === 'module' &&
         exporter.left.property.name === 'exports'
       ) {
         overwrite = `const ${name}`
-        append = `export default ${name};`
+        append = `export { ${name} as default };`
       }
     }
 
