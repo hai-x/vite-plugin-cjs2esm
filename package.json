@@ -34,7 +34,7 @@
     "dev": "pnpm run link & tsup src/index.ts --format esm --watch",
     "lint": "eslint . --fix",
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
-    "prepublishOnly": "pnpm run lint",
+    "prepublishOnly": "pnpm run lint && pnpm run build",
     "release": "bumpp && npm publish",
     "link": "node ./scripts/link.mjs"
   },
