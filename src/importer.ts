@@ -45,6 +45,11 @@ export const resolveDynamicImporters = (
             start: callee.start,
             end: callee.end,
             content: `import`
+          },
+          {
+            start: callee.start,
+            end: callee.end,
+            content: `import`
           }
         ],
         appendLefts: [
@@ -54,6 +59,10 @@ export const resolveDynamicImporters = (
           }
         ],
         appendRights: [
+          {
+            start: callee.end + 1,
+            content: `/* @vite-ignore */`
+          },
           {
             start: importer.end,
             content: thenable

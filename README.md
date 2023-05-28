@@ -72,7 +72,7 @@ const __EXPORTER_0__ = foo
 export { __EXPORTER_0__ as default }
 ```
 
-3.`dynamic require`(Need to use `rollup` plugin for assistance)
+3.`dynamic require`
 
 ```js
 // input
@@ -88,26 +88,4 @@ function bar(file) {
   })
 }
 bar('foo')
-```
-
-> ❗❗❗ <br> If you want to use `dynamic import` feature, although it is
-> already supported by native browser, `vite` uses `esbuild` for bundling in the
-> development stage, and `esbuild` does not support this feature, so we also
-> need to use the `rollup` plugin.
-
-```js
-import cjs2esm from 'vite-plugin-cjs2esm'
-import dynamicImportVars from '@rollup/plugin-dynamic-import-vars'
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  // ...
-  plugins: [
-    // ...
-    cjs2esm(),
-    dynamicImportVars({
-      include: './'
-    })
-  ]
-})
 ```
