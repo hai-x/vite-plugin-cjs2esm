@@ -34,7 +34,17 @@ export default defineConfig({
 })
 ```
 
+# Options
+
+### filter
+
+Type: `RegExp`<br> Default: `/.*/`<br>
+
+Files to include in this plugin (default all).
+
 # Features
+
+1. `static require`
 
 ```js
 // input
@@ -43,6 +53,8 @@ const foo = require('./foo')
 import * as __IMPORTER_0__ from './foo'
 const foo = __IMPORTER_0__.default || __IMPORTER_0__
 ```
+
+2. `exports`
 
 ```js
 // input
@@ -58,4 +70,44 @@ module.exports = foo
 // ↓ ouput
 const __EXPORTER_0__ = foo
 export { __EXPORTER_0__ as default }
+```
+
+3.`dynamic require`(Need to use `rollup` plugin for assistance)
+
+```js
+// input
+function bar(file) {
+  const foo = require(`./foo/${file}`)
+  console.log(foo)
+}
+bar('bar')
+// ↓ output
+function bar(file) {
+  const foo = import(`./foo/${file}`).then(foo => {
+    console.log(foo)
+  })
+}
+bar('foo')
+```
+
+> ❗❗❗ <br> If you want to use `dynamic import` feature, although it is
+> already supported by native browser, `vite` uses `esbuild` for bundling in the
+> development stage, and `esbuild` does not support this feature, so we also
+> need to use the `rollup` plugin.
+
+```js
+import cjs2esm from 'vite-plugin-cjs2esm'
+import dynamicImportVars from '@rollup/plugin-dynamic-import-vars'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  // ...
+  plugins: [
+    // ...
+    cjs2esm(),
+    dynamicImportVars({
+      include: './'
+    })
+  ]
+})
 ```

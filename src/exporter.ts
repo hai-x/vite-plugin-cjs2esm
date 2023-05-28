@@ -1,22 +1,26 @@
-import { Node } from 'acorn'
+import { Exporter, ResolveOptions } from './types/index'
 
 export const resolveExporters = (
-  exporters: (Node & any)[]
-): (Node & { overwrite: string; append: string })[] => {
+  exporters: Exporter[]
+): (Exporter & {
+  overwrites: ResolveOptions
+  append?: string
+})[] => {
   let index = 0
 
   return exporters.map(exporter => {
     const name = `__EXPORTER_${index++}__`
-    let overwrite
-    let append
-    if (exporter.left.type === 'MemberExpression') {
-      if (exporter.left.object.name === 'exports') {
-        const propertyName = exporter.left.property.name
+    const { start, end } = exporter.left
+    let overwrite: string | undefined
+    let append: string | undefined
+    if (exporter?.left?.type === 'MemberExpression') {
+      if (exporter.left.object?.name === 'exports') {
+        const propertyName = exporter.left.property?.name
         overwrite = `const ${name}`
         append = `export { ${name} as ${propertyName} };`
       } else if (
-        exporter.left.object.name === 'module' &&
-        exporter.left.property.name === 'exports'
+        exporter.left.object?.name === 'module' &&
+        exporter.left.property?.name === 'exports'
       ) {
         overwrite = `const ${name}`
         append = `export { ${name} as default };`
@@ -25,9 +29,7 @@ export const resolveExporters = (
 
     return {
       ...exporter,
-      start: exporter.left.start,
-      end: exporter.left.end,
-      overwrite,
+      overwrites: [{ start, end, content: overwrite }],
       append
     }
   })

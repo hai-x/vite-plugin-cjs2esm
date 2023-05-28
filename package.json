@@ -31,12 +31,13 @@
     }
   },
   "scripts": {
-    "dev": "pnpm run link & tsup src/index.ts --format esm --watch",
+    "dev": "pnpm run link && pnpm run ts-watch",
+    "link": "node ./scripts/link.mjs",
+    "ts-watch": "tsup src/index.ts --format esm --watch",
     "lint": "eslint . --fix",
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "prepublishOnly": "pnpm run lint && pnpm run build",
-    "release": "bumpp && npm publish",
-    "link": "node ./scripts/link.mjs"
+    "release": "bumpp && npm publish"
   },
   "devDependencies": {
     "@types/node": "^20.2.4",
