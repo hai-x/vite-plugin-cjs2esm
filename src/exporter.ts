@@ -17,13 +17,13 @@ export const resolveExporters = (
       if (exporter.left.object?.name === 'exports') {
         const propertyName = exporter.left.property?.name
         overwrite = `const ${name}`
-        append = `export { ${name} as ${propertyName} };`
+        append = `\nexport { ${name} as ${propertyName} };`
       } else if (
         exporter.left.object?.name === 'module' &&
         exporter.left.property?.name === 'exports'
       ) {
         overwrite = `const ${name}`
-        append = `export { ${name} as default };`
+        append = `\nexport { ${name} as default };`
       }
     }
 

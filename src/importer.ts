@@ -45,11 +45,6 @@ export const resolveDynamicImporters = (
             start: callee.start,
             end: callee.end,
             content: `import`
-          },
-          {
-            start: callee.start,
-            end: callee.end,
-            content: `import`
           }
         ],
         appendLefts: [
