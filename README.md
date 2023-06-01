@@ -23,18 +23,14 @@ pnpm install vite-plugin-cjs2esm --save-dev
 In your vite.config.ts:
 
 ```js
-import cjs2esm from 'vite-plugin-cjs2esm'
-// https://vitejs.dev/config/
+import { defineConfig } from 'vite'
+import * as cjs2esm from 'vite-plugin-cjs2esm'
+
 export default defineConfig({
-  // ...
-  plugins: [
-    // ...
-    cjs2esm()
-  ],
-  // for pre-build
+  plugins: [cjs2esm.vitePlugin()],
   optimizeDeps: {
     esbuildOptions: {
-      plugins: [esbuildPlugin()]
+      plugins: [cjs2esm.esbuildPlugin()]
     }
   }
 })
