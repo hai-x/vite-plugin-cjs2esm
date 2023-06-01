@@ -30,7 +30,13 @@ export default defineConfig({
   plugins: [
     // ...
     cjs2esm()
-  ]
+  ],
+  // for pre-build
+  optimizeDeps: {
+    esbuildOptions: {
+      plugins: [esbuildPlugin()]
+    }
+  }
 })
 ```
 
