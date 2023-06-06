@@ -49,8 +49,6 @@ export const esbuildPlugin = (options: Options) => {
         }
         if (!skipTransform(source, id)) {
           source = _transform(source)
-        }
-        if (source) {
           return {
             contents: source,
             loader: 'js'
