@@ -32,7 +32,7 @@ export const vitePlugin = (options?: Options): Plugin => {
   }
 }
 
-export const esbuildPlugin = (options: Options) => {
+export const esbuildPlugin = (options?: Options) => {
   const _options = Object.assign({}, defaultOptions, options)
   const { filter } = _options
   return {
