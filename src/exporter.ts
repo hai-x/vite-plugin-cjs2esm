@@ -1,5 +1,31 @@
 import { Exporter, ResolveOptions } from './types/index'
 
+const filterDuplicateExporters = (
+  exporters: Exporter[]
+): {
+  noDuplicateExporters: Exporter[]
+  duplicateExporters: Exporter[]
+} => {
+  const propertyNameSet = new Set()
+
+  const noDuplicateExporters: Exporter[] = []
+  const duplicateExporters: Exporter[] = []
+
+  for (let i = exporters.length - 1; i >= 0; i--) {
+    const propertyName = exporters[i].left.property?.name
+    if (propertyNameSet.has(propertyName)) {
+      duplicateExporters.push(exporters[i])
+      continue
+    }
+    propertyNameSet.add(propertyName)
+    noDuplicateExporters.push(exporters[i])
+  }
+  return {
+    noDuplicateExporters,
+    duplicateExporters
+  }
+}
+
 export const resolveExporters = (
   exporters: Exporter[]
 ): Partial<
@@ -11,8 +37,10 @@ export const resolveExporters = (
   let index = 0
   let needAppendDefaultExport = true
   const _exportsNames: string[] = []
-  const _exporters: ReturnType<typeof resolveExporters> = exporters.map(
-    exporter => {
+  const { duplicateExporters, noDuplicateExporters } =
+    filterDuplicateExporters(exporters)
+  const _exporters: ReturnType<typeof resolveExporters> =
+    noDuplicateExporters.map(exporter => {
       const name = `__EXPORTER_${index++}__`
       const { start, end } = exporter.left
       let overwrite: string | undefined
@@ -38,8 +66,7 @@ export const resolveExporters = (
         overwrites: [{ start, end, content: overwrite }],
         append
       }
-    }
-  )
+    })
   // adapt to Vite internal module transform that default import from cjs in node_modules
   // Vite will wrap cjs module by import `__vite__cjsImport__` which is default import
   // import __vite__cjsImport__ from "/node_modules/.vite/deps/xxxx"
@@ -48,6 +75,23 @@ export const resolveExporters = (
       append: `\nconst __DEFAULT_EXPORTER__ = { ${_exportsNames.join(
         ','
       )} }\nexport default __DEFAULT_EXPORTER__`
+    })
+  }
+
+  // hack to multiple duplicate exports
+  // like following:
+  // exports.foo = 'foo'
+  // exports.foo = 'bar'
+  // the last exports takes effect acquiescently
+  if (duplicateExporters.length) {
+    duplicateExporters.forEach(exporter => {
+      const propertyName = exporter.left.property?.name
+      const overwrite = `let ${propertyName}_REWRITE_${index}`
+      _exporters.push({
+        overwrites: [
+          { start: exporter.start, end: exporter.end, content: overwrite }
+        ]
+      })
     })
   }
   return _exporters
