@@ -1,12 +1,6 @@
 # vite-plugin-cjs2esm
 
-🤩 A vite plugin that transform CommonJS to ESM during development stage.
-
-You can use `@rollup/plugin-commonjs` which is a rollup plugin to transform
-CommonJS to ESM during production stage.
-
-Because Vite bundle by esbuild during development stage and rollup during
-production stage.
+🤩 A vite plugin that transform CommonJS to ESModule in Development stage.
 
 # Installation
 
@@ -24,13 +18,13 @@ In your vite.config.ts:
 
 ```js
 import { defineConfig } from 'vite'
-import * as cjs2esm from 'vite-plugin-cjs2esm'
+import viteCjsToEsmPlugin from 'vite-plugin-cjs2esm'
 
 export default defineConfig({
-  plugins: [cjs2esm.vitePlugin()],
+  plugins: [viteCjsToEsmPlugin.vitePlugin()],
   optimizeDeps: {
     esbuildOptions: {
-      plugins: [cjs2esm.esbuildPlugin()]
+      plugins: [viteCjsToEsmPlugin.esbuildPlugin()]
     }
   }
 })

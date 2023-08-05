@@ -33,8 +33,13 @@ export const getVariableDeclarationAstNode = (
   return getAstNode(ancestors, VARIABLE_AST_TYPE)
 }
 
+const postfixRE = /[?#].*$/s
+export const cleanUrl = (url: string): string => {
+  return url.replace(postfixRE, '')
+}
+
 export const skipTransform = (source: string, id: string) => {
-  if (!DEFAULT_EXTENSIONS.includes(path.extname(id))) return true
+  if (!DEFAULT_EXTENSIONS.includes(path.extname(cleanUrl(id)))) return true
   else if (VITE_REG.test(id)) return true
   else if (!isCommonJs(source)) return true
   return false

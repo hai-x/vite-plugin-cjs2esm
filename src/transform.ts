@@ -11,7 +11,7 @@ import {
   getVariableDeclaratorIdName
 } from './utils'
 
-const transform = (source: string): string | null => {
+export const transform = (source: string): string | null => {
   let ast: Node
   const importers: Importer[] = []
   const dynamicImporters: DynamicImporter[] = []
@@ -109,6 +109,7 @@ const transform = (source: string): string | null => {
   }
   for (const exporter of resolveExporters(exporters)) {
     const { append, overwrites } = exporter
+
     if (Array.isArray(overwrites))
       for (const i of overwrites) {
         i && i.content && ms.overwrite(i.start, i.end, i.content)
